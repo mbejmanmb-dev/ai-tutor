@@ -1,6 +1,17 @@
 import os
 import json
 import logging
+
+last_working_model = "gemini-3.6-flash" # Domyślny start
+
+def get_best_model():
+    return last_working_model
+
+def report_model_failure(model_name):
+    global last_working_model
+    if last_working_model == model_name:
+        last_working_model = "gemini-3.5-flash" # Awaryjne przełączenie
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
