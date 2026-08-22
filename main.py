@@ -1,13 +1,11 @@
 import os
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 from google import genai
 
 load_dotenv()
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
 
 api_key = os.getenv("GEMINI_API_KEY")
 try:
@@ -17,8 +15,14 @@ except Exception as e:
     client = None
 
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+async def read_root():
+    # Bezpośrednie wczytanie pliku index.html - zero błędów Jinja2/Starlette
+    try:
+        with open("templates/index.html", "r", encoding="utf-8") as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    except Exception as e:
+        return HTMLResponse(content=f"<h1>Błąd ładowania szablonu: {e}</h1>", status_code=500)
 
 @app.post("/api/chat")
 async def chat_endpoint(request: Request):
