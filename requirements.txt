@@ -3,3 +3,4 @@ uvicorn
 gTTS==2.5.1
 requests
 python-dotenv==1.0.1
+jinja2
