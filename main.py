@@ -9,7 +9,6 @@ load_dotenv()
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# Bezpieczna inicjalizacja klienta
 api_key = os.getenv("GEMINI_API_KEY")
 try:
     client = genai.Client(api_key=api_key) if api_key else genai.Client()
@@ -37,7 +36,6 @@ async def chat_endpoint(request: Request):
         if not client:
             return JSONResponse({"reply": "Systemy Starka są offline - brak klucza API."})
 
-        # Próba wywołania stabilnego modelu
         response = client.models.generate_content(
             model="gemini-3.5-flash",
             contents=prompt,
