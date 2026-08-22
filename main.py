@@ -24,17 +24,17 @@ DB_FILE = "chat_history.json"
 DEFAULT_USER = "Maks"
 
 LISTA_MODELI_CHAT = [
-    "gemini-3.6-flash",
     "gemini-3.5-flash",
+    "gemini-3.6-flash",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
     "gemini-3.1-flash-lite"
 ]
 
 LISTA_MODELI_QUIZ = [
-    "gemini-3.6-flash",
-    "gemini-2.5-pro",
     "gemini-3.5-flash",
+    "gemini-2.5-pro",
+    "gemini-3.6-flash",
     "gemini-2.5-flash"
 ]
 
