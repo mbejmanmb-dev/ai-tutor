@@ -3,561 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stark Lab - AI Korepetytor</title>
-    <!-- Zewnętrzna biblioteka glosu męskiego -->
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
+    <title>Stark AI Tutor - HUD</title>
     <style>
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
             margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
         }
         .container {
-            width: 100%;
-            max-width: 900px;
-            background: #1e293b;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            overflow: hidden;
-            border: 1px solid #334155;
+            max-width: 700px;
+            margin: auto;
+            background: #161b22;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+            border: 1px solid #30363d;
         }
-        .header {
-            background: linear-gradient(135deg, #7f1d1d, #991b1b, #1e293b);
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid #ef4444;
+        h2 {
+            color: #00d2ff;
+            text-align: center;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.4rem;
         }
-        .stark-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .avatar-img {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: 2px solid #f59e0b;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
-            background-color: #000;
-            object-fit: cover;
-        }
-        .header-info h1 {
-            margin: 0;
-            font-size: 1.3rem;
-            color: #fef08a;
-        }
-        .header-info p {
-            margin: 2px 0 0 0;
+        .hud-subtitle {
+            text-align: center;
+            color: #8b949e;
             font-size: 0.85rem;
-            color: #cbd5e1;
+            margin-bottom: 20px;
         }
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .btn-secondary {
-            background: #334155;
-            color: #f8fafc;
-            border: 1px solid #475569;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .btn-secondary:hover {
-            background: #475569;
-        }
-        .chat-box {
-            flex: 1;
-            padding: 20px;
+        #chat-box {
+            height: 350px;
             overflow-y: auto;
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #30363d;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            background-color: #0f172a;
+            gap: 10px;
         }
         .message {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
             max-width: 85%;
-        }
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-        .message.bot {
-            align-self: flex-start;
-        }
-        .avatar-msg {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        .user .avatar-msg {
-            background-color: #2563eb;
-            color: white;
-        }
-        .bubble {
-            padding: 14px 18px;
-            border-radius: 12px;
-            line-height: 1.6;
-            font-size: 0.95rem;
+            line-height: 1.5;
             word-wrap: break-word;
         }
-        .user .bubble {
-            background-color: #2563eb;
-            color: white;
-            border-top-right-radius: 2px;
+        .user-msg {
+            background: #1f6feb;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
         }
-        .bot .bubble {
-            background-color: #1e293b;
-            color: #f1f5f9;
-            border: 1px solid #334155;
-            border-top-left-radius: 2px;
+        .stark-msg {
+            background: #21262d;
+            color: #58a6ff;
+            align-self: flex-start;
+            border-left: 3px solid #00d2ff;
+            border-bottom-left-radius: 2px;
         }
-        .bubble table {
-            border-collapse: collapse;
-            margin: 12px 0;
-            width: 100%;
-            background: #0f172a;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #334155;
-        }
-        .bubble th, .bubble td {
-            border: 1px solid #334155;
-            padding: 8px 12px;
+        .system-msg {
+            background: #38290d;
+            color: #d29922;
+            align-self: center;
+            font-size: 0.9rem;
             text-align: center;
-        }
-        .bubble th {
-            background-color: #334155;
-            color: #fef08a;
-            font-weight: bold;
-        }
-        .bubble td {
-            color: #f8fafc;
+            width: 100%;
         }
         .input-area {
-            padding: 16px;
-            background: #1e293b;
-            border-top: 1px solid #334155;
             display: flex;
             gap: 10px;
+            margin-bottom: 20px;
         }
         input[type="text"] {
             flex: 1;
             padding: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: white;
-            border-radius: 8px;
-            outline: none;
-            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            background: #0d1117;
+            color: #fff;
+            font-size: 1rem;
         }
         input[type="text"]:focus {
-            border-color: #ef4444;
+            border-color: #00d2ff;
+            outline: none;
         }
-        .btn-mic {
-            background: #334155;
-            color: #f8fafc;
-            border: 1px solid #475569;
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-        .btn-mic.recording {
-            background: #dc2626;
-            animation: pulse 1.2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
-        }
-        .btn-main {
-            padding: 12px 24px;
-            background: #dc2626;
+        button.btn-primary {
+            padding: 12px 20px;
+            background: #238636;
             color: white;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 6px;
             font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .btn-main:hover {
-            background: #b91c1c;
+        button.btn-primary:hover {
+            background: #2ea043;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+        button.btn-stop {
+            padding: 12px 15px;
+            background: #da3633;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
         }
-        .modal-content {
-            background: #1e293b;
-            padding: 24px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid #ef4444;
+        button.btn-stop:hover {
+            background: #f85149;
         }
-        .modal-content h2 { margin-top: 0; color: #fef08a; }
-        .modal-content label { display: block; margin: 10px 0 5px; font-size: 0.9rem; }
-        .modal-content input { width: 100%; box-sizing: border-box; }
-        .modal-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
-        .typing { font-style: italic; color: #94a3b8; }
+        #game-panel {
+            padding: 15px;
+            border: 1px solid #00d2ff;
+            border-radius: 8px;
+            background: #0d1117;
+        }
+        #game-panel h3 {
+            margin-top: 0;
+            color: #00d2ff;
+            font-size: 1rem;
+        }
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .game-buttons button {
+            padding: 10px;
+            background: #1f6feb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .game-buttons button:hover {
+            background: #388bfd;
+        }
+        #status-indicator {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-bottom: 5px;
+            font-style: italic;
+            height: 15px;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h2>Stark AI Tutor</h2>
+        <div class="hud-subtitle">System Wspomagania Edukacji v3.6 // Profil: Maks (6 Klasa)</div>
+        
+        <div id="status-indicator">Status: Gotowy do działania</div>
+        <div id="chat-box"></div>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Wpisz wiadomość do Starka..." onkeypress="handleKeyPress(event)">
+            <button class="btn-primary" onclick="sendMessage()">Wyślij</button>
+            <button class="btn-stop" onclick="stopSpeech()" title="Zatrzymaj mowę lektora">Wycisz</button>
+        </div>
 
-<div class="container">
-    <div class="header">
-        <div class="stark-profile">
-            <img class="avatar-img" src="https://img.freepik.com/free-vector/hand-drawn-superhero-illustration_23-2150965313.jpg" alt="Tony Stark Avatar">
-            <div class="header-info">
-                <h1>Stark AI Korepetytor</h1>
-                <p>Uczeń: <b>Maks</b> | Klasa 6</p>
+        <div id="game-panel">
+            <h3>Wybierz misję bojową (Gra jednorundowa):</h3>
+            <div class="game-buttons">
+                <button onclick="startMission('matematyka')">Matematyka</button>
+                <button onclick="startMission('historia')">Historia</button>
+                <button onclick="startMission('przyroda')">Przyroda</button>
+                <button onclick="startMission('geografia')">Geografia</button>
+                <button onclick="startMission('język polski')">J. Polski</button>
             </div>
         </div>
-        <div class="header-actions">
-            <button class="btn-secondary" id="ttsToggleBtn" onclick="toggleTTS()" title="Przełącz czytanie na głos">🔊 Lektor: WŁ</button>
-            <button class="btn-secondary" onclick="openQuizModal()">📝 Quiz</button>
-            <button class="btn-secondary" onclick="clearHistory()">🗑️ Wyczyść</button>
-        </div>
     </div>
 
-    <div class="chat-box" id="chatBox"></div>
-
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Wpisz odpowiedź lub pytanie..." onkeypress="handleKeyPress(event)">
-        <button class="btn-mic" id="micBtn" onclick="toggleSpeech()" title="Mów do mikrofonu">🎤</button>
-        <button class="btn-main" onclick="sendMessage()">Wyślij</button>
-    </div>
-</div>
-
-<div class="modal" id="quizModal">
-    <div class="modal-content">
-        <h2>Generuj Quiz / Sprawdzian</h2>
-        <label>Przedmiot:</label>
-        <input type="text" id="quizSubject" placeholder="np. Matematyka, Biologia">
-        <label>Temat:</label>
-        <input type="text" id="quizTopic" placeholder="np. Trójkąty, Układ Słoneczny">
-        <label>Liczba pytań:</label>
-        <input type="number" id="quizNum" value="3" min="1" max="5">
-        <div class="modal-actions">
-            <button class="btn-secondary" onclick="closeQuizModal()">Anuluj</button>
-            <button class="btn-main" onclick="submitQuiz()">Generuj</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    let recognition = null;
-    let isRecording = false;
-    let ttsEnabled = true;
-
-    function formatText(text) {
-        if (!text) return "";
-        let formatted = text
-            .replace(/###\s?/g, '')
-            .replace(/\$(.*?)\$/g, '$1')
-            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-            .replace(/\*(.*?)\*/g, '<i>$1</i>')
-            .replace(/\n/g, '<br>');
-        return formatted;
-    }
-
-    function prepareTextForSpeech(rawText) {
-        if (!rawText) return "";
-
-        let tempDiv = document.createElement("div");
-        tempDiv.innerHTML = formatText(rawText);
-
-        const tables = tempDiv.querySelectorAll("table, svg");
-        tables.forEach(t => t.remove());
-
-        let cleanText = tempDiv.textContent || tempDiv.innerText || "";
-
-        // PRZEKSZTAŁCENIE MINUSA PRED CYFRĄ NA SŁOWO "MINUS"
-        cleanText = cleanText.replace(/(^|\s)-(\d+)/g, '$1minus $2');
-
-        // USUWANIE INNYCH POJEDYNCZYCH MYŚLNIKÓW I ZNAKÓW FORMATOWANIA
-        cleanText = cleanText
-            .replace(/[-_]{2,}/g, ' ')
-            .replace(/\s-\s/g, ' ')
-            .replace(/[*#$]/g, '')
-            .replace(/WIZUALIZACJA:/gi, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-
-        return cleanText;
-    }
-
-    function stopSpeaking() {
-        if (typeof responsiveVoice !== 'undefined') {
-            responsiveVoice.cancel();
-        }
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-        }
-    }
-
-    function speakText(text) {
-        if (!ttsEnabled) return;
-
-        stopSpeaking();
-
-        const cleanText = prepareTextForSpeech(text);
-        if (!cleanText) return;
-
-        // Opcja 1: ResponsiveVoice (Polski Męski)
-        if (typeof responsiveVoice !== 'undefined' && responsiveVoice.voiceSupport()) {
-            responsiveVoice.speak(cleanText, "Polish Male", { pitch: 0.8, rate: 0.95 });
-            return;
+    <script>
+        function setStatus(text) {
+            document.getElementById('status-indicator').innerText = "Status: " + text;
         }
 
-        // Opcja 2: Domyślny syntezator przeglądarki z mocno obniżonym tonem (pitch = 0.35)
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = 'pl-PL';
-            utterance.rate = 0.9;
-            utterance.pitch = 0.35; // Niska częstotliwość dla męskiej barwy
-
-            const voices = window.speechSynthesis.getVoices();
-            const plVoices = voices.filter(v => v.lang.startsWith('pl'));
-            const maleVoice = plVoices.find(v => 
-                v.name.toLowerCase().includes('male') || 
-                v.name.toLowerCase().includes('adam') ||
-                v.name.toLowerCase().includes('paul') ||
-                v.name.toLowerCase().includes('jan')
-            );
-
-            if (maleVoice) utterance.voice = maleVoice;
-
-            window.speechSynthesis.speak(utterance);
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const cleanText = text.replace(/[*#_]/g, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'pl-PL';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
         }
-    }
 
-    function toggleTTS() {
-        ttsEnabled = !ttsEnabled;
-        const btn = document.getElementById("ttsToggleBtn");
-        if (ttsEnabled) {
-            btn.innerHTML = "🔊 Lektor: WŁ";
-            btn.style.background = "#334155";
-        } else {
-            btn.innerHTML = "🔇 Lektor: WYŁ";
-            btn.style.background = "#7f1d1d";
-            stopSpeaking();
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                setStatus("Wyciszono mowę lektora.");
+            }
         }
-    }
 
-    async function loadHistory() {
-        const chatBox = document.getElementById("chatBox");
-        chatBox.innerHTML = "";
-
-        try {
-            const res = await fetch('/api/history');
-            const history = await res.json();
-
-            if (!history || history.length === 0) {
-                const initMsg = "Cześć Maks! Tu Tony. Wszystkie systemy działają. O czym powiemy sobie dzisiaj?";
-                appendMessage("bot", initMsg, false);
+        function appendMessage(sender, text) {
+            const chatBox = document.getElementById('chat-box');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message';
+            
+            if (sender === 'Maks') {
+                msgDiv.classList.add('user-msg');
+                msgDiv.innerHTML = `<b>Ty:</b> ${text}`;
+            } else if (sender === 'System') {
+                msgDiv.classList.add('system-msg');
+                msgDiv.innerHTML = `${text}`;
             } else {
-                history.forEach(msg => {
-                    appendMessage(msg.role === "user" ? "user" : "bot", msg.content, false);
+                msgDiv.classList.add('stark-msg');
+                msgDiv.innerHTML = `<b>Stark:</b> ${text}`;
+            }
+            
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendMessage('Maks', text);
+            input.value = '';
+            setStatus("Stark przetwarza dane...");
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
                 });
+                const data = await response.json();
+                appendMessage('Stark', data.reply);
+                speakText(data.reply);
+                setStatus("Gotowy");
+            } catch (err) {
+                appendMessage('System', 'Błąd połączenia ze zbroją.');
+                setStatus("Błąd krytyczny");
             }
-        } catch (e) {
-            appendMessage("bot", "Cześć Maks! Gotowy do nauki?", false);
         }
-    }
 
-    async function sendMessage() {
-        const input = document.getElementById("userInput");
-        const text = input.value.trim();
-        if (!text) return;
+        async function startMission(subject) {
+            appendMessage('System', `== Uruchamianie symulacji bojowej: ${subject.toUpperCase()} ==`);
+            setStatus(`Generowanie misji (${subject})...`);
 
-        stopSpeaking();
-
-        appendMessage("user", text, false);
-        input.value = "";
-
-        showTyping();
-
-        try {
-            const res = await fetch("/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: text })
-            });
-
-            removeTyping();
-
-            const data = await res.json();
-            if (data.reply) {
-                appendMessage("bot", data.reply, true);
+            try {
+                const response = await fetch('/api/game', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subject: subject })
+                });
+                const data = await response.json();
+                appendMessage('Stark', data.reply);
+                speakText(data.reply);
+                setStatus("Misja aktywna");
+            } catch (err) {
+                appendMessage('System', 'Awaria systemu gier Starka!');
+                setStatus("Błąd misji");
             }
-        } catch (e) {
-            removeTyping();
-            appendMessage("bot", "Systemy nie odpowiedziały. Spróbuj powtórzyć.", true);
-        }
-    }
-
-    function appendMessage(sender, text, shouldSpeak = false) {
-        const chatBox = document.getElementById("chatBox");
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${sender}`;
-
-        if (sender === "bot") {
-            const img = document.createElement("img");
-            img.className = "avatar-img";
-            img.style.width = "36px";
-            img.style.height = "36px";
-            img.src = "https://img.freepik.com/free-vector/hand-drawn-superhero-illustration_23-2150965313.jpg";
-            msgDiv.appendChild(img);
-        } else {
-            const avatarDiv = document.createElement("div");
-            avatarDiv.className = "avatar-msg";
-            avatarDiv.textContent = "👦";
-            msgDiv.appendChild(avatarDiv);
         }
 
-        const bubbleDiv = document.createElement("div");
-        bubbleDiv.className = "bubble";
-        bubbleDiv.innerHTML = formatText(text);
-
-        msgDiv.appendChild(bubbleDiv);
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        if (sender === "bot" && shouldSpeak) {
-            speakText(text);
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
         }
-    }
 
-    function showTyping() {
-        const chatBox = document.getElementById("chatBox");
-        const typingDiv = document.createElement("div");
-        typingDiv.id = "typingIndicator";
-        typingDiv.className = "message bot";
-        typingDiv.innerHTML = `
-            <img class="avatar-img" style="width:36px; height:36px;" src="https://img.freepik.com/free-vector/hand-drawn-superhero-illustration_23-2150965313.jpg">
-            <div class="bubble typing">Stark AI analizuje dane...</div>
-        `;
-        chatBox.appendChild(typingDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function removeTyping() {
-        const indicator = document.getElementById("typingIndicator");
-        if (indicator) indicator.remove();
-    }
-
-    function initSpeech() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) return;
-
-        recognition = new SpeechRecognition();
-        recognition.lang = 'pl-PL';
-        recognition.continuous = false;
-        recognition.interimResults = false;
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            document.getElementById("userInput").value = transcript;
-            stopSpeech();
+        // Powitanie startowe
+        window.onload = function() {
+            appendMessage('Stark', 'Systemy Starka w pełni online. Witaj w bazie, Maks. Wybierz temat z panelu poniżej lub napisz do mnie, co dzisiaj rozpracowujemy.');
         };
-
-        recognition.onerror = () => stopSpeech();
-        recognition.onend = () => stopSpeech();
-    }
-
-    function toggleSpeech() {
-        if (!recognition) initSpeech();
-        if (!recognition) return;
-
-        if (isRecording) {
-            stopSpeech();
-        } else {
-            stopSpeaking();
-            recognition.start();
-            isRecording = true;
-            document.getElementById("micBtn").classList.add("recording");
-        }
-    }
-
-    function stopSpeech() {
-        if (recognition && isRecording) {
-            recognition.stop();
-        }
-        isRecording = false;
-        document.getElementById("micBtn").classList.remove("recording");
-    }
-
-    async function clearHistory() {
-        if (confirm("Czy na pewno chcesz wyczyścić historię rozmowy?")) {
-            stopSpeaking();
-            await fetch('/api/history', { method: 'DELETE' });
-            loadHistory();
-        }
-    }
-
-    function openQuizModal() { document.getElementById("quizModal").style.display = "flex"; }
-    function closeQuizModal() { document.getElementById("quizModal").style.display = "none"; }
-
-    async function submitQuiz() {
-        const subject = document.getElementById("quizSubject").value;
-        const topic = document.getElementById("quizTopic").value;
-        const num = document.getElementById("quizNum").value;
-
-        if (!subject || !topic) return;
-
-        closeQuizModal();
-        appendMessage("user", `Wygeneruj quiz: ${subject}, temat: ${topic}`, false);
-        showTyping();
-
-        try {
-            const res = await fetch("/api/quiz", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ subject, topic, num_questions: parseInt(num) })
-            });
-
-            removeTyping();
-            const data = await res.json();
-            if (data.quiz) {
-                appendMessage("bot", "**Oto Twój quiz:**\n\n" + data.quiz, true);
-            }
-        } catch (e) {
-            removeTyping();
-        }
-    }
-
-    function handleKeyPress(e) {
-        if (e.key === 'Enter') sendMessage();
-    }
-
-    window.onload = loadHistory;
-</script>
-
+    </script>
 </body>
 </html>
