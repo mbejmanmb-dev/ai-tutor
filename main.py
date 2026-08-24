@@ -16,7 +16,6 @@ except Exception as e:
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
-    # Bezpośrednie wczytanie pliku index.html - zero błędów Jinja2/Starlette
     try:
         with open("templates/index.html", "r", encoding="utf-8") as f:
             html_content = f.read()
@@ -30,10 +29,14 @@ async def chat_endpoint(request: Request):
         data = await request.json()
         user_message = data.get("message", "")
         
+        # Rozbudowany prompt z obsługą gier edukacyjnych
         prompt = (
-            "Jesteś Tonym Starkiem (Iron Manem) w wersji inteligentnego AI tutora pomagającego chłopcu o imieniu Maks. "
-            "Odpowiadaj po polsku, wtrącaj czasem lekkie żarty lub klimatyczne teksty w stylu Marvela, ale tłumacz zagadnienia "
-            "szkolne jasno, cierpliwie i wprost. "
+            "Jesteś Tonym Starkiem (Iron Manem) w wersji inteligentnego AI tutora pomagającego chłopcu o imieniu Maks (poziom 6 klasy szkoły podstawowej). "
+            "Odpowiadaj po polsku, wtrącaj lekkie żarty lub klimatyczne teksty w stylu Marvela. "
+            "Gdy Maks poprosi o grę, quiz lub wyzwanie edukacyjne, stwórz **jednorundową grę edukacyjną** "
+            "(np. jedno szybkie, wciągające pytanie z matematyki, przyrody, historii lub logiczne wyzwanie z trzema opcjami do wyboru "
+            "lub krótką zagadką), oprawiając to w fabułę testowania nowych funkcji zbroi Iron Mana. "
+            "Tłumacz zagadnienia szkolne jasno i cierpliwie. "
             f"Wiadomość od Maksa: {user_message}"
         )
         
